@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { addTask, removeTask } from "../redux/actions/actions";
-
+import TaskCard from "../components/TaskCards";
 interface CategoryType {
   id: number;
   title: string;
@@ -66,6 +66,11 @@ const EventsPage: React.FC = () => {
             )}
             {category.title}
           </button>
+        ))}
+      </div>
+      <div>
+        {categoryData.map((task) => (
+          <TaskCard key={task} task={task} />
         ))}
       </div>
     </div>
