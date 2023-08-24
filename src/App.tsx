@@ -1,10 +1,15 @@
 import Navbar from "./components/Navbar";
+import EventsPage from "./pages/EventsPage";
+import { Provider } from "react-redux";
+import store from "./redux/store/store";
 const App = () => {
   return (
-    <div className="custom-container">
-    <Navbar/>
-    <h1 className="font-bold text-center text-red-600">Swenson_Challenge</h1>
-    </div>
+    <Provider store={store}>
+      <div className="custom-container">
+        <Navbar />
+        <EventsPage />
+      </div>
+    </Provider>
   );
 };
 
