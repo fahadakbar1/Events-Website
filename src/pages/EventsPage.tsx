@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { addTask, removeTask } from "../redux/actions/actions";
+import { useSelector } from "react-redux";
 import TaskCard from "../components/TaskCards";
 interface CategoryType {
   id: number;
   title: string;
   image: string;
 }
-
 interface TaskType {
   id: number;
   title: string;
@@ -18,7 +16,6 @@ interface TaskType {
 }
 
 const EventsPage: React.FC = () => {
-  const dispatch = useDispatch();
   const [categories, setCategories] = useState<CategoryType[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<Number>();
   const [categoryData, setCategoryData] = useState<TaskType[]>([]);
@@ -79,31 +76,37 @@ const EventsPage: React.FC = () => {
   };
 
   return (
-    <div>
-      <div className="flex mb-4">
-        {categories.map((category) => (
-          <button
-            key={category.id}
-            className={`mr-4 px-4 py-2 rounded ${
-              selectedCategory === category.id
-                ? "bg-blue-500 text-white"
-                : "bg-gray-300 text-gray-800"
-            }`}
-            onClick={() => handleCategorySelect(category.id)}
-          >
-            {selectedCategory === category.id && (
-              <span className="mr-2">1</span>
-            )}
-            {category.title}
-          </button>
-        ))}
+    <div className="flex justify-start align-middle">
+      <div className="w-1/5">
+        <h1>Event Builder</h1>
+        <p>Add items to your event using the + to view our cost estimate</p>
       </div>
-      <div>
-        {categoryData.map((task) => (
-          <TaskCard key={task.id} task={task} />
-        ))}
+      <div className="w-3/5">
+        <div className="flex mb-4">
+          {categories.map((category) => (
+            <button
+              key={category.id}
+              className={`mr-4 px-4 py-2 rounded ${
+                selectedCategory === category.id
+                  ? "bg-blue-500 text-white"
+                  : "bg-gray-300 text-gray-800"
+              }`}
+              onClick={() => handleCategorySelect(category.id)}
+            >
+              {selectedCategory === category.id && (
+                <span className="mr-2">1</span>
+              )}
+              {category.title}
+            </button>
+          ))}
+        </div>
+        <div>
+          {categoryData.map((task) => (
+            <TaskCard key={task.id} task={task} />
+          ))}
+        </div>
       </div>
-      <div className="mt-4">
+      <div className="mt-4 w-1/5">
         <h2 className="text-lg font-semibold mb-2">Your Event Estimate</h2>
         <p>
           {
