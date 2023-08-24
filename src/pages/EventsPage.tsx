@@ -76,37 +76,65 @@ const EventsPage: React.FC = () => {
   };
 
   return (
-    <div className="flex justify-start align-middle">
-      <div className="w-1/5">
-        <h1>Event Builder</h1>
-        <p>Add items to your event using the + to view our cost estimate</p>
+    <div className="md:flex justify-start align-middle w-[92%] m-auto mt-4 md:mt-10">
+      <div className="w-full mb-5 md:w-1/5 px-4 lg:pr-8">
+        <h1 className="text-center md:text-left text-xl md:text-lg font-bold">
+          Event Builder
+        </h1>
+        <p className=" mt-2 md:mt-4 text-[#747474] text-center md:text-left ">
+          Add items to your event using the{" "}
+          <svg
+            width="17"
+            height="17"
+            viewBox="0 0 29 30"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            className="inline"
+          >
+            <g opacity="0.6">
+              <circle cx="14.2616" cy="14.8608" r="14.1885" fill="black" />
+              <circle
+                cx="14.2616"
+                cy="14.8608"
+                r="14.1885"
+                fill="black"
+                fill-opacity="0.2"
+              />
+            </g>
+            <path
+              d="M14.2613 20.6413C13.4542 20.6413 12.7999 19.987 12.7999 19.1798V10.5418C12.7999 9.73463 13.4542 9.08032 14.2613 9.08032C15.0685 9.08032 15.7228 9.73464 15.7228 10.5418V19.1798C15.7228 19.987 15.0685 20.6413 14.2613 20.6413ZM9.94228 16.3223C9.13515 16.3223 8.48083 15.6679 8.48083 14.8608C8.48083 14.0537 9.13515 13.3994 9.94228 13.3994H18.5804C19.3875 13.3994 20.0418 14.0537 20.0418 14.8608C20.0418 15.6679 19.3875 16.3223 18.5804 16.3223H9.94228Z"
+              fill="white"
+            />
+          </svg>{" "}
+          to view our cost estimate
+        </p>
       </div>
-      <div className="w-3/5">
-        <div className="flex mb-4">
+      <div className="w-full md:w-3/5">
+        <div className="w-full md:flex mb-4">
           {categories.map((category) => (
             <button
               key={category.id}
-              className={`mr-4 px-4 py-2 rounded ${
+              className={`mx-0.5 md:mx-4 px-4 py-1 md:px-8 md:py-2.5 rounded-full hover:bg-[#5DA3A9] hover:text-white hover:text-bold hover:font-semibold transition duration-500 ${
                 selectedCategory === category.id
-                  ? "bg-blue-500 text-white"
-                  : "bg-gray-300 text-gray-800"
+                  ? "bg-[#5DA3A9] text-white font-semibold"
+                  : "bg-transparent text-gray-800"
               }`}
               onClick={() => handleCategorySelect(category.id)}
             >
-              {selectedCategory === category.id && (
+              {/* {selectedCategory === category.id && (
                 <span className="mr-2">1</span>
-              )}
+              )} */}
               {category.title}
             </button>
           ))}
         </div>
-        <div>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           {categoryData.map((task) => (
             <TaskCard key={task.id} task={task} />
           ))}
         </div>
       </div>
-      <div className="mt-4 w-1/5">
+      <div className="mt-4 w-full md:w-1/5">
         <h2 className="text-lg font-semibold mb-2">Your Event Estimate</h2>
         <p>
           {
