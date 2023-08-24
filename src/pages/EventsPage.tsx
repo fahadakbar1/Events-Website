@@ -68,6 +68,16 @@ const EventsPage: React.FC = () => {
     return selectedTaskPrices.reduce((sum: any, price: any) => sum + price, 0);
   };
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleSaveClick = () => {
+    setIsModalOpen(true);
+  };
+
   return (
     <div>
       <div className="flex mb-4">
@@ -96,11 +106,12 @@ const EventsPage: React.FC = () => {
       <div className="mt-4">
         <h2 className="text-lg font-semibold mb-2">Your Event Estimate</h2>
         <p>
-          {selectedTasks.length === 0
-            ? "$-"
-            : `${calculateEstimatedPrice()}-$${
-                calculateEstimatedPrice() + 300
-              }` // Adjust this range as needed
+          {
+            selectedTasks.length === 0
+              ? "$-"
+              : `${calculateEstimatedPrice()}-$${
+                  calculateEstimatedPrice() + 300
+                }` // Adjust this range as needed
           }
         </p>
         {/* Display selected categories and tasks */}
@@ -125,10 +136,32 @@ const EventsPage: React.FC = () => {
             </div>
           ))}
         </div>
-        <button className="mt-4 bg-blue-500 text-white px-4 py-2 rounded">
+        <button
+          className="mt-4 bg-blue-500 text-white px-4 py-2 rounded"
+          onClick={handleSaveClick}
+        >
           Save
         </button>
       </div>
+      {isModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded shadow-md">
+            <h2 className="text-lg font-semibold mb-2">Event Saved!</h2>
+            <p>
+              Total Price: ${calculateEstimatedPrice()}-$
+              {calculateEstimatedPrice() + 300}
+            </p>
+            <div className="flex items-center justify-end mt-4">
+              <button
+                className="text-gray-500 hover:text-gray-700"
+                onClick={handleCloseModal}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
