@@ -121,10 +121,19 @@ const EventsPage: React.FC = () => {
               }`}
               onClick={() => handleCategorySelect(category.id)}
             >
-              {/* {selectedCategory === category.id && (
-                <span className="mr-2">1</span>
-              )} */}
               {category.title}
+              {selectedCategory === category.id &&
+                selectedTasks.filter((id: any) =>
+                  categoryData.some((task) => task.id === id)
+                ).length > 0 && (
+                  <span className="ml-2">
+                    {
+                      selectedTasks.filter((id: any) =>
+                        categoryData.some((task) => task.id === id)
+                      ).length
+                    }
+                  </span>
+                )}
             </button>
           ))}
         </div>
