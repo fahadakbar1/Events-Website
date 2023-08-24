@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addTask, removeTask } from "../redux/actions/actions";
 import TaskCard from "../components/TaskCards";
 interface CategoryType {
@@ -8,11 +8,20 @@ interface CategoryType {
   image: string;
 }
 
+interface TaskType {
+  id: number;
+  title: string;
+  minBudget: number;
+  maxBudget: number;
+  avgBudget: number;
+  image: string;
+}
+
 const EventsPage: React.FC = () => {
   const dispatch = useDispatch();
   const [categories, setCategories] = useState<CategoryType[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<Number>();
-  const [categoryData, setCategoryData] = useState([]);
+  const [categoryData, setCategoryData] = useState<TaskType[]>([]);
 
   // Fetch categories
   useEffect(() => {
@@ -48,6 +57,17 @@ const EventsPage: React.FC = () => {
     setSelectedCategory(categoryId);
   };
 
+  const selectedTasks = useSelector((state: any) => state.selectedTasks);
+
+  // Calculate estimated price
+  const calculateEstimatedPrice = () => {
+    const selectedTaskPrices = selectedTasks.map(
+      (taskId: number) =>
+        categoryData.find((task) => task.id === taskId)?.avgBudget || 0
+    );
+    return selectedTaskPrices.reduce((sum: any, price: any) => sum + price, 0);
+  };
+
   return (
     <div>
       <div className="flex mb-4">
@@ -70,8 +90,44 @@ const EventsPage: React.FC = () => {
       </div>
       <div>
         {categoryData.map((task) => (
-          <TaskCard key={task} task={task} />
+          <TaskCard key={task.id} task={task} />
         ))}
+      </div>
+      <div className="mt-4">
+        <h2 className="text-lg font-semibold mb-2">Your Event Estimate</h2>
+        <p>
+          {selectedTasks.length === 0
+            ? "$-"
+            : `${calculateEstimatedPrice()}-$${
+                calculateEstimatedPrice() + 300
+              }` // Adjust this range as needed
+          }
+        </p>
+        {/* Display selected categories and tasks */}
+        <div className="mt-4">
+          {categories.map((category) => (
+            <div key={category.id}>
+              <h3 className="text-md font-semibold mb-2">{category.title}</h3>
+              {selectedTasks
+                .filter((id: number) =>
+                  categoryData.some((task) => task.id === id)
+                )
+                .map((selectedId: React.Key | null | undefined) => (
+                  <p key={selectedId}>
+                    {categoryData.find((task) => task.id === selectedId)?.title}{" "}
+                    - $
+                    {
+                      categoryData.find((task) => task.id === selectedId)
+                        ?.avgBudget
+                    }
+                  </p>
+                ))}
+            </div>
+          ))}
+        </div>
+        <button className="mt-4 bg-blue-500 text-white px-4 py-2 rounded">
+          Save
+        </button>
       </div>
     </div>
   );
