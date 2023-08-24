@@ -77,7 +77,7 @@ const EventsPage: React.FC = () => {
 
   return (
     <div className="md:flex justify-start align-middle w-[92%] m-auto mt-4 md:mt-10">
-      <div className="w-full mb-5 md:w-1/5 px-4 lg:pr-8">
+      <div className="w-full mb-5 md:w-1/5 px-4 lg:pr-8 lg:px-0">
         <h1 className="text-center md:text-left text-xl md:text-lg font-bold">
           Event Builder
         </h1>
@@ -109,7 +109,7 @@ const EventsPage: React.FC = () => {
           to view our cost estimate
         </p>
       </div>
-      <div className="w-full md:w-3/5">
+      <div className="w-full md:w-3/5 bg-[#FFFFFF] rounded-2xl">
         <div className="w-full md:flex mb-4">
           {categories.map((category) => (
             <button
@@ -117,7 +117,7 @@ const EventsPage: React.FC = () => {
               className={`mx-0.5 md:mx-4 px-4 py-1 md:px-8 md:py-2.5 rounded-full hover:bg-[#5DA3A9] hover:text-white hover:text-bold hover:font-semibold transition duration-500 ${
                 selectedCategory === category.id
                   ? "bg-[#5DA3A9] text-white font-semibold"
-                  : "bg-transparent text-gray-800"
+                  : "bg-[#FAF9F8] text-gray-800"
               }`}
               onClick={() => handleCategorySelect(category.id)}
             >
@@ -134,28 +134,33 @@ const EventsPage: React.FC = () => {
           ))}
         </div>
       </div>
-      <div className="mt-4 w-full md:w-1/5">
-        <h2 className="text-lg font-semibold mb-2">Your Event Estimate</h2>
-        <p>
+      <div className="mt-4 w-full md:w-1/5 bg-[#FFFFFF] rounded-2xl p-3">
+        <h2 className="text-md text-center font-semibold mb-2">
+          Your Event Estimate
+        </h2>
+        <p className="text-center text-3xl font-semibold">
           {
             selectedTasks.length === 0
               ? "$-"
-              : `${calculateEstimatedPrice()}-$${
+              : `${calculateEstimatedPrice().toLocaleString()}-$${(
                   calculateEstimatedPrice() + 300
-                }` // Adjust this range as needed
+                ).toLocaleString()}` // Adjust this range as needed
           }
         </p>
+        <hr className="text-[#FAF9F8] my-4" />
         {/* Display selected categories and tasks */}
         <div className="mt-4">
           {categories.map((category) => (
-            <div key={category.id}>
-              <h3 className="text-md font-semibold mb-2">{category.title}</h3>
+            <div className="mb-3" key={category.id}>
+              <h3 className="text-sm text-[#6c6c6c] font-medium mb-1">
+                {category.title}
+              </h3>
               {selectedTasks
                 .filter((id: number) =>
                   categoryData.some((task) => task.id === id)
                 )
                 .map((selectedId: React.Key | null | undefined) => (
-                  <p key={selectedId}>
+                  <p className="text-sm text-[#747474]" key={selectedId}>
                     {categoryData.find((task) => task.id === selectedId)?.title}{" "}
                     - $
                     {
@@ -168,7 +173,7 @@ const EventsPage: React.FC = () => {
           ))}
         </div>
         <button
-          className="mt-4 bg-blue-500 text-white px-4 py-2 rounded"
+          className="mt-4 w-full bg-[#5DA3A9] font-semibold text-white px-4 py-2 rounded-xl"
           onClick={handleSaveClick}
         >
           Save
