@@ -5,7 +5,7 @@ import store from "./redux/store/store";
 const App = () => {
   return (
     <Provider store={store}>
-      <div className="custom-container">
+      <div className="custom-container font-sans">
         <Navbar />
         <EventsPage />
       </div>

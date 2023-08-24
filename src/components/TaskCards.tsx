@@ -29,7 +29,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
 
   return (
     <div
-      className={`border mb-4 rounded-lg relative ${
+      className={`border md:mb-4 rounded-lg relative ${
         isSelected ? "border-[#5DA3A9]" : "border-gray-300"
       }`}
     >

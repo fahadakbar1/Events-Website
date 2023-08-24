@@ -76,12 +76,12 @@ const EventsPage: React.FC = () => {
   };
 
   return (
-    <div className="md:flex justify-start align-middle w-[92%] m-auto mt-4 md:mt-10">
-      <div className="w-full mb-5 md:w-1/5 px-4 lg:pr-8 lg:px-0">
+    <div className="md:flex justify-start align-middle md:w-[92%] m-auto mt-4 md:mt-10 grid grid-cols-12 gap-6">
+      <div className="w-full col-span-12 md:col-span-3 px-4 lg:px-0">
         <h1 className="text-center md:text-left text-xl md:text-lg font-bold">
           Event Builder
         </h1>
-        <p className=" mt-2 md:mt-4 text-[#747474] text-center md:text-left ">
+        <p className=" mt-2 md:mt-4 text-[#747474] text-center md:text-left pr-0 md:pr-12">
           Add items to your event using the{" "}
           <svg
             width="17"
@@ -109,12 +109,12 @@ const EventsPage: React.FC = () => {
           to view our cost estimate
         </p>
       </div>
-      <div className="w-full md:w-3/5 bg-[#FFFFFF] rounded-2xl">
+      <div className="w-full col-span-12 md:col-span-6 bg-[#FFFFFF] rounded-2xl px-3 py-4 md:p-4 h-[80vh]">
         <div className="w-full md:flex mb-4">
           {categories.map((category) => (
             <button
               key={category.id}
-              className={`mx-0.5 md:mx-4 px-4 py-1 md:px-8 md:py-2.5 rounded-full hover:bg-[#5DA3A9] hover:text-white hover:text-bold hover:font-semibold transition duration-500 ${
+              className={`mx-0.5 md:mx-2 px-4 py-1 md:px-8 md:py-2.5 rounded-full hover:bg-[#5DA3A9] hover:text-white hover:text-bold hover:font-semibold transition duration-500 ${
                 selectedCategory === category.id
                   ? "bg-[#5DA3A9] text-white font-semibold"
                   : "bg-[#FAF9F8] text-gray-800"
@@ -134,50 +134,57 @@ const EventsPage: React.FC = () => {
           ))}
         </div>
       </div>
-      <div className="mt-4 w-full md:w-1/5 bg-[#FFFFFF] rounded-2xl p-3">
-        <h2 className="text-md text-center font-semibold mb-2">
-          Your Event Estimate
-        </h2>
-        <p className="text-center text-3xl font-semibold">
-          {
-            selectedTasks.length === 0
-              ? "$-"
-              : `${calculateEstimatedPrice().toLocaleString()}-$${(
-                  calculateEstimatedPrice() + 300
-                ).toLocaleString()}` // Adjust this range as needed
-          }
-        </p>
-        <hr className="text-[#FAF9F8] my-4" />
-        {/* Display selected categories and tasks */}
-        <div className="mt-4">
-          {categories.map((category) => (
-            <div className="mb-3" key={category.id}>
-              <h3 className="text-sm text-[#6c6c6c] font-medium mb-1">
-                {category.title}
-              </h3>
-              {selectedTasks
-                .filter((id: number) =>
-                  categoryData.some((task) => task.id === id)
-                )
-                .map((selectedId: React.Key | null | undefined) => (
-                  <p className="text-sm text-[#747474]" key={selectedId}>
-                    {categoryData.find((task) => task.id === selectedId)?.title}{" "}
-                    - $
-                    {
-                      categoryData.find((task) => task.id === selectedId)
-                        ?.avgBudget
-                    }
-                  </p>
-                ))}
+      <div className="w-full col-span-12 md:col-span-3 bg-[#FFFFFF] rounded-2xl p-3 fixed bottom-0 md:static md:h-[80vh]">
+        <div className="flex md:flex md:flex-col justify-between items-start h-full">
+          <div className="w-full">
+            <h2 className="text-sm md:text-base text-left md:text-center font-thin md:font-semibold text-[#616161] md:text-black">
+              Your Event Estimate
+            </h2>
+            <p className="md:text-center text-3xl font-semibold">
+              {
+                selectedTasks.length === 0
+                  ? "$-"
+                  : `${calculateEstimatedPrice().toLocaleString()}-$${(
+                      calculateEstimatedPrice() + 300
+                    ).toLocaleString()}` // Adjust this range as needed
+              }
+            </p>
+            <hr className="text-[#FAF9F8] my-4 hidden md:block" />
+            {/* Display selected categories and tasks */}
+            <div className="mt-4 hidden md:block">
+              {categories.map((category) => (
+                <div className="mb-3" key={category.id}>
+                  <h3 className="text-sm text-[#6c6c6c] font-medium mb-1">
+                    {category.title}
+                  </h3>
+                  {selectedTasks
+                    .filter((id: number) =>
+                      categoryData.some((task) => task.id === id)
+                    )
+                    .map((selectedId: React.Key | null | undefined) => (
+                      <p className="text-sm text-[#747474]" key={selectedId}>
+                        {
+                          categoryData.find((task) => task.id === selectedId)
+                            ?.title
+                        }{" "}
+                        - $
+                        {
+                          categoryData.find((task) => task.id === selectedId)
+                            ?.avgBudget
+                        }
+                      </p>
+                    ))}
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
+          <button
+            className="text-sm md:text-base md:mt-4 md:w-full md:bg-[#5DA3A9] font-semibold text-[#5DA3A9] md:text-white px-4 md:py-2 rounded-xl"
+            onClick={handleSaveClick}
+          >
+            Save
+          </button>
         </div>
-        <button
-          className="mt-4 w-full bg-[#5DA3A9] font-semibold text-white px-4 py-2 rounded-xl"
-          onClick={handleSaveClick}
-        >
-          Save
-        </button>
       </div>
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
