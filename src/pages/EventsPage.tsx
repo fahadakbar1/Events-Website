@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { addTask, removeTask } from "../redux/actions/actions";
+import { useSelector } from "react-redux";
 import TaskCard from "../components/TaskCards";
 interface CategoryType {
   id: number;
   title: string;
   image: string;
 }
-
 interface TaskType {
   id: number;
   title: string;
@@ -18,7 +16,6 @@ interface TaskType {
 }
 
 const EventsPage: React.FC = () => {
-  const dispatch = useDispatch();
   const [categories, setCategories] = useState<CategoryType[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<Number>();
   const [categoryData, setCategoryData] = useState<TaskType[]>([]);
@@ -79,69 +76,115 @@ const EventsPage: React.FC = () => {
   };
 
   return (
-    <div>
-      <div className="flex mb-4">
-        {categories.map((category) => (
-          <button
-            key={category.id}
-            className={`mr-4 px-4 py-2 rounded ${
-              selectedCategory === category.id
-                ? "bg-blue-500 text-white"
-                : "bg-gray-300 text-gray-800"
-            }`}
-            onClick={() => handleCategorySelect(category.id)}
+    <div className="md:flex justify-start align-middle md:w-[92%] m-auto mt-4 md:mt-10 grid grid-cols-12 gap-6">
+      <div className="w-full col-span-12 md:col-span-3 px-4 lg:px-0">
+        <h1 className="text-center md:text-left text-xl md:text-lg font-bold">
+          Event Builder
+        </h1>
+        <p className=" mt-2 md:mt-4 text-[#747474] text-center md:text-left pr-0 md:pr-12">
+          Add items to your event using the{" "}
+          <svg
+            width="17"
+            height="17"
+            viewBox="0 0 29 30"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            className="inline"
           >
-            {selectedCategory === category.id && (
-              <span className="mr-2">1</span>
-            )}
-            {category.title}
-          </button>
-        ))}
-      </div>
-      <div>
-        {categoryData.map((task) => (
-          <TaskCard key={task.id} task={task} />
-        ))}
-      </div>
-      <div className="mt-4">
-        <h2 className="text-lg font-semibold mb-2">Your Event Estimate</h2>
-        <p>
-          {
-            selectedTasks.length === 0
-              ? "$-"
-              : `${calculateEstimatedPrice()}-$${
-                  calculateEstimatedPrice() + 300
-                }` // Adjust this range as needed
-          }
+            <g opacity="0.6">
+              <circle cx="14.2616" cy="14.8608" r="14.1885" fill="black" />
+              <circle
+                cx="14.2616"
+                cy="14.8608"
+                r="14.1885"
+                fill="black"
+                fill-opacity="0.2"
+              />
+            </g>
+            <path
+              d="M14.2613 20.6413C13.4542 20.6413 12.7999 19.987 12.7999 19.1798V10.5418C12.7999 9.73463 13.4542 9.08032 14.2613 9.08032C15.0685 9.08032 15.7228 9.73464 15.7228 10.5418V19.1798C15.7228 19.987 15.0685 20.6413 14.2613 20.6413ZM9.94228 16.3223C9.13515 16.3223 8.48083 15.6679 8.48083 14.8608C8.48083 14.0537 9.13515 13.3994 9.94228 13.3994H18.5804C19.3875 13.3994 20.0418 14.0537 20.0418 14.8608C20.0418 15.6679 19.3875 16.3223 18.5804 16.3223H9.94228Z"
+              fill="white"
+            />
+          </svg>{" "}
+          to view our cost estimate
         </p>
-        {/* Display selected categories and tasks */}
-        <div className="mt-4">
+      </div>
+      <div className="w-full col-span-12 md:col-span-6 bg-[#FFFFFF] rounded-2xl px-3 py-4 md:p-4 h-[80vh]">
+        <div className="w-full md:flex mb-4">
           {categories.map((category) => (
-            <div key={category.id}>
-              <h3 className="text-md font-semibold mb-2">{category.title}</h3>
-              {selectedTasks
-                .filter((id: number) =>
-                  categoryData.some((task) => task.id === id)
-                )
-                .map((selectedId: React.Key | null | undefined) => (
-                  <p key={selectedId}>
-                    {categoryData.find((task) => task.id === selectedId)?.title}{" "}
-                    - $
-                    {
-                      categoryData.find((task) => task.id === selectedId)
-                        ?.avgBudget
-                    }
-                  </p>
-                ))}
-            </div>
+            <button
+              key={category.id}
+              className={`mx-0.5 md:mx-2 px-4 py-1 md:px-8 md:py-2.5 rounded-full hover:bg-[#5DA3A9] hover:text-white hover:text-bold hover:font-semibold transition duration-500 ${
+                selectedCategory === category.id
+                  ? "bg-[#5DA3A9] text-white font-semibold"
+                  : "bg-[#FAF9F8] text-gray-800"
+              }`}
+              onClick={() => handleCategorySelect(category.id)}
+            >
+              {/* {selectedCategory === category.id && (
+                <span className="mr-2">1</span>
+              )} */}
+              {category.title}
+            </button>
           ))}
         </div>
-        <button
-          className="mt-4 bg-blue-500 text-white px-4 py-2 rounded"
-          onClick={handleSaveClick}
-        >
-          Save
-        </button>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          {categoryData.map((task) => (
+            <TaskCard key={task.id} task={task} />
+          ))}
+        </div>
+      </div>
+      <div className="w-full col-span-12 md:col-span-3 bg-[#FFFFFF] rounded-2xl p-3 fixed bottom-0 md:static md:h-[80vh]">
+        <div className="flex md:flex md:flex-col justify-between items-start h-full">
+          <div className="w-full">
+            <h2 className="text-sm md:text-base text-left md:text-center font-thin md:font-semibold text-[#616161] md:text-black">
+              Your Event Estimate
+            </h2>
+            <p className="md:text-center text-3xl font-semibold">
+              {
+                selectedTasks.length === 0
+                  ? "$-"
+                  : `${calculateEstimatedPrice().toLocaleString()}-$${(
+                      calculateEstimatedPrice() + 300
+                    ).toLocaleString()}` // Adjust this range as needed
+              }
+            </p>
+            <hr className="text-[#FAF9F8] my-4 hidden md:block" />
+            {/* Display selected categories and tasks */}
+            <div className="mt-4 hidden md:block">
+              {categories.map((category) => (
+                <div className="mb-3" key={category.id}>
+                  <h3 className="text-sm text-[#6c6c6c] font-medium mb-1">
+                    {category.title}
+                  </h3>
+                  {selectedTasks
+                    .filter((id: number) =>
+                      categoryData.some((task) => task.id === id)
+                    )
+                    .map((selectedId: React.Key | null | undefined) => (
+                      <p className="text-sm text-[#747474]" key={selectedId}>
+                        {
+                          categoryData.find((task) => task.id === selectedId)
+                            ?.title
+                        }{" "}
+                        - $
+                        {
+                          categoryData.find((task) => task.id === selectedId)
+                            ?.avgBudget
+                        }
+                      </p>
+                    ))}
+                </div>
+              ))}
+            </div>
+          </div>
+          <button
+            className="text-sm md:text-base md:mt-4 md:w-full md:bg-[#5DA3A9] font-semibold text-[#5DA3A9] md:text-white px-4 md:py-2 rounded-xl"
+            onClick={handleSaveClick}
+          >
+            Save
+          </button>
+        </div>
       </div>
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">

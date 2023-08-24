@@ -61,7 +61,7 @@ const Navbar: React.FC = () => {
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: -1000, opacity: 0 }}
           transition={{ duration: 0.5 }}
-          className="fixed top-0 left-0 w-full h-full bg-[#5DA3A9]  overflow-y-auto"
+          className="z-10 fixed top-0 left-0 w-full h-full bg-[#5DA3A9]  overflow-y-auto"
         >
           <div className="p-4 text-right">
             <button

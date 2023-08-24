@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+body{
+  background: #FAF9F8;
+}
+
 .custom-container {
   margin: auto;
   max-width: 100%;
