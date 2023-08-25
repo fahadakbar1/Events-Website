@@ -131,14 +131,14 @@ const EventsPage: React.FC = () => {
                     (dataTask) => dataTask.id === SelectedTask.task.id
                   )
                 ).length > 0 && (
-                  <span className="ml-2">
+                  <span className="ml-2">(
                     {
                       selectedTasks.filter((SelectedTask: SelectedTask) =>
                         categoryData.some(
                           (dataTask) => dataTask.id === SelectedTask.task.id
                         )
                       ).length
-                    }
+                    })
                   </span>
                 )}
             </button>
@@ -164,7 +164,7 @@ const EventsPage: React.FC = () => {
               {
                 selectedTasks.length === 0
                   ? "$-"
-                  : `${calculateMinPrice().toLocaleString()}-$${calculateMaxPrice().toLocaleString()}` // Adjust this range as needed
+                  : `$${calculateMinPrice().toLocaleString()}-${calculateMaxPrice().toLocaleString()}` // Adjust this range as needed
               }
             </p>
             <hr className="text-[#FAF9F8] my-4 hidden md:block" />
@@ -172,7 +172,7 @@ const EventsPage: React.FC = () => {
             <div className="mt-4 hidden md:block">
               {categories.map((category) => (
                 <div className="mb-3" key={category.id}>
-                  <h3 className="text-sm text-[#6c6c6c] font-medium mb-1">
+                  <h3 className="text-sm text-[#6c6c6c] font-semibold mb-1">
                     {category.title}
                   </h3>
                   {selectedTasks
@@ -250,20 +250,41 @@ const EventsPage: React.FC = () => {
       </div>
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-6 rounded shadow-md">
-            <h2 className="text-lg font-semibold mb-2">Event Saved!</h2>
-            <p>
-              Total Price: ${calculateMinPrice()}-$
-              {calculateMaxPrice()}
-            </p>
-            <div className="flex items-center justify-end mt-4">
+          <div className="bg-[#FAF9F8] p-6 rounded-2xl shadow-md w-2/5 m-auto h-2/3 relative">
               <button
-                className="text-gray-500 hover:text-gray-700"
+                className="text-black hover:text-gray-700 transition-all duration-500 absolute top-4 right-4"
                 onClick={handleCloseModal}
               >
-                Close
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
               </button>
-            </div>
+            <div className="h-full flex flex-col justify-center items-center">
+            <div className=" bg-white h-56 w-56 rounded-full bg-circle flex flex-col justify-center items-center">
+  <h2 className="text-2xl font-semibold mb-4">Event Saved!</h2>
+
+  <p className="text-4xl font-semibold mb-4">
+  {(calculateMinPrice() === 0  && calculateMaxPrice() === 0)
+                  ? "$-"
+                  : `$${calculateMinPrice()}-${calculateMaxPrice()}`}
+  </p>
+  <svg width="40" height="37" viewBox="0 0 40 37" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M20 0L24.4903 13.8197H39.0211L27.2654 22.3607L31.7557 36.1803L20 27.6393L8.2443 36.1803L12.7346 22.3607L0.97887 13.8197H15.5097L20 0Z" fill="black"/>
+</svg>
+</div>
+</div>
+            
           </div>
         </div>
       )}
