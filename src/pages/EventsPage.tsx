@@ -119,7 +119,7 @@ const EventsPage: React.FC = () => {
             </h1>
             <img src={selectedCategory?.image} alt={selectedCategory?.title} />
             <p className="mt-4 text-[#747474] text-left">
-              There are {categoryData.length} tasks you can selected in this
+              There are {categoryData.length} tasks which you can select in this
               category
             </p>
           </div>
