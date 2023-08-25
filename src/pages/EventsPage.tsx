@@ -1,24 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import TaskCard from "../components/TaskCards";
+import { Task } from "../redux/reducers/selectedTasksReducer"; // Import the Task type
+import { SelectedTask } from "../redux/reducers/selectedTasksReducer";
 interface CategoryType {
   id: number;
   title: string;
   image: string;
 }
-interface TaskType {
-  id: number;
-  title: string;
-  minBudget: number;
-  maxBudget: number;
-  avgBudget: number;
-  image: string;
-}
 
 const EventsPage: React.FC = () => {
   const [categories, setCategories] = useState<CategoryType[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<Number>();
-  const [categoryData, setCategoryData] = useState<TaskType[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<number | null>(null); // Use null instead of undefined
+  const [categoryData, setCategoryData] = useState<Task[]>([]);
 
   // Fetch categories
   useEffect(() => {
@@ -28,7 +22,6 @@ const EventsPage: React.FC = () => {
       .then((response) => response.json())
       .then((data) => {
         setCategories(data);
-        console.log("Categories :", data);
       })
       .catch((error) => console.error("Error fetching categories:", error));
   }, []);
@@ -42,7 +35,6 @@ const EventsPage: React.FC = () => {
         .then((response) => response.json())
         .then((data) => {
           setCategoryData(data);
-          console.log("Selected Category: ", data);
         })
         .catch((error) =>
           console.error("Error fetching category data:", error)
@@ -56,13 +48,25 @@ const EventsPage: React.FC = () => {
 
   const selectedTasks = useSelector((state: any) => state.selectedTasks);
 
+  console.log(selectedTasks);
   // Calculate estimated price
-  const calculateEstimatedPrice = () => {
+  const calculateMinPrice = () => {
     const selectedTaskPrices = selectedTasks.map(
-      (taskId: number) =>
-        categoryData.find((task) => task.id === taskId)?.avgBudget || 0
+      (SelectedTask: SelectedTask) => SelectedTask.task.minBudget || 0
     );
-    return selectedTaskPrices.reduce((sum: any, price: any) => sum + price, 0);
+    return selectedTaskPrices.reduce(
+      (sum: number, price: number) => sum + price,
+      0
+    );
+  };
+  const calculateMaxPrice = () => {
+    const selectedTaskPrices = selectedTasks.map(
+      (SelectedTask: SelectedTask) => SelectedTask.task.maxBudget || 0
+    );
+    return selectedTaskPrices.reduce(
+      (sum: number, price: number) => sum + price,
+      0
+    );
   };
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -74,7 +78,6 @@ const EventsPage: React.FC = () => {
   const handleSaveClick = () => {
     setIsModalOpen(true);
   };
-
   return (
     <div className="md:flex justify-start align-middle md:w-[92%] m-auto mt-4 md:mt-10 grid grid-cols-12 gap-6">
       <div className="w-full col-span-12 md:col-span-3 px-4 lg:px-0">
@@ -121,16 +124,33 @@ const EventsPage: React.FC = () => {
               }`}
               onClick={() => handleCategorySelect(category.id)}
             >
-              {/* {selectedCategory === category.id && (
-                <span className="mr-2">1</span>
-              )} */}
               {category.title}
+              {selectedCategory === category.id &&
+                selectedTasks.filter((SelectedTask: SelectedTask) =>
+                  categoryData.some(
+                    (dataTask) => dataTask.id === SelectedTask.task.id
+                  )
+                ).length > 0 && (
+                  <span className="ml-2">
+                    {
+                      selectedTasks.filter((SelectedTask: SelectedTask) =>
+                        categoryData.some(
+                          (dataTask) => dataTask.id === SelectedTask.task.id
+                        )
+                      ).length
+                    }
+                  </span>
+                )}
             </button>
           ))}
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           {categoryData.map((task) => (
-            <TaskCard key={task.id} task={task} />
+            <TaskCard
+              key={task.id}
+              task={task}
+              selectedCategory={selectedCategory}
+            />
           ))}
         </div>
       </div>
@@ -144,9 +164,7 @@ const EventsPage: React.FC = () => {
               {
                 selectedTasks.length === 0
                   ? "$-"
-                  : `${calculateEstimatedPrice().toLocaleString()}-$${(
-                      calculateEstimatedPrice() + 300
-                    ).toLocaleString()}` // Adjust this range as needed
+                  : `${calculateMinPrice().toLocaleString()}-$${calculateMaxPrice().toLocaleString()}` // Adjust this range as needed
               }
             </p>
             <hr className="text-[#FAF9F8] my-4 hidden md:block" />
@@ -158,22 +176,66 @@ const EventsPage: React.FC = () => {
                     {category.title}
                   </h3>
                   {selectedTasks
-                    .filter((id: number) =>
-                      categoryData.some((task) => task.id === id)
+                    .filter(
+                      (selectedTask: { categoryId: number }) =>
+                        selectedTask.categoryId === category.id
                     )
-                    .map((selectedId: React.Key | null | undefined) => (
-                      <p className="text-sm text-[#747474]" key={selectedId}>
-                        {
-                          categoryData.find((task) => task.id === selectedId)
-                            ?.title
-                        }{" "}
-                        - $
-                        {
-                          categoryData.find((task) => task.id === selectedId)
-                            ?.avgBudget
-                        }
-                      </p>
-                    ))}
+                    .map(
+                      (selectedTask: {
+                        task: {
+                          id: React.Key | null | undefined;
+                          title:
+                            | string
+                            | number
+                            | boolean
+                            | React.ReactElement<
+                                any,
+                                string | React.JSXElementConstructor<any>
+                              >
+                            | Iterable<React.ReactNode>
+                            | React.ReactPortal
+                            | null
+                            | undefined;
+                          minBudget:
+                            | string
+                            | number
+                            | boolean
+                            | React.ReactElement<
+                                any,
+                                string | React.JSXElementConstructor<any>
+                              >
+                            | Iterable<React.ReactNode>
+                            | React.ReactPortal
+                            | null
+                            | undefined;
+                          maxBudget:
+                            | string
+                            | number
+                            | boolean
+                            | React.ReactElement<
+                                any,
+                                string | React.JSXElementConstructor<any>
+                              >
+                            | Iterable<React.ReactNode>
+                            | React.ReactPortal
+                            | null
+                            | undefined;
+                        };
+                      }) => (
+                        <div
+                          className="flex justify-between"
+                          key={selectedTask.task.id}
+                        >
+                          <p className="text-sm text-[#747474]">
+                            {selectedTask.task.title}
+                          </p>
+                          <p className="text-sm text-[#747474]">
+                            ${selectedTask.task.minBudget} - $
+                            {selectedTask.task.maxBudget}
+                          </p>
+                        </div>
+                      )
+                    )}
                 </div>
               ))}
             </div>
@@ -191,8 +253,8 @@ const EventsPage: React.FC = () => {
           <div className="bg-white p-6 rounded shadow-md">
             <h2 className="text-lg font-semibold mb-2">Event Saved!</h2>
             <p>
-              Total Price: ${calculateEstimatedPrice()}-$
-              {calculateEstimatedPrice() + 300}
+              Total Price: ${calculateMinPrice()}-$
+              {calculateMaxPrice()}
             </p>
             <div className="flex items-center justify-end mt-4">
               <button

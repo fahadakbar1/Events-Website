@@ -1,29 +1,26 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addTask, removeTask } from "../redux/actions/actions";
-
+import { SelectedTask, Task } from "../redux/reducers/selectedTasksReducer";
 interface TaskCardProps {
-  task: {
-    id: number;
-    title: string;
-    minBudget: number;
-    maxBudget: number;
-    avgBudget: number;
-    image: string;
-  };
+  task: Task; // Update the interface to include the Task type
+  selectedCategory: any;
 }
 
-const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
+const TaskCard: React.FC<TaskCardProps> = ({ task, selectedCategory }) => {
   const dispatch = useDispatch();
+
   const selectedTasks = useSelector((state: any) => state.selectedTasks);
 
-  const isSelected = selectedTasks.includes(task.id);
+  const isSelected = selectedTasks.some(
+    (selectedTask: SelectedTask) => selectedTask.task.id === task.id
+  );
 
   const handleTaskToggle = () => {
     if (isSelected) {
       dispatch(removeTask(task.id));
     } else {
-      dispatch(addTask(task.id));
+      dispatch(addTask(task, selectedCategory)); // Dispatch the entire task object
     }
   };
 

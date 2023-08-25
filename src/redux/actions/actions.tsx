@@ -1,8 +1,9 @@
 import { AnyAction } from "redux";
+import { Task } from "../reducers/selectedTasksReducer";
 
-export const addTask = (taskId: number): AnyAction => ({
+export const addTask = (task: Task, categoryId: number): AnyAction => ({
   type: "ADD_TASK",
-  payload: taskId,
+  payload: { task, categoryId },
 });
 
 export const removeTask = (taskId: number): AnyAction => ({
