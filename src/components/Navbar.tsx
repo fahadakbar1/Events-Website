@@ -1,5 +1,8 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+
+const logo = require("../assets/images/logo.png");
 
 const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -8,28 +11,32 @@ const Navbar: React.FC = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  const menuItems = [
+    { to: "/", label: "Event Builder" },
+    { to: "/saved", label: "Saved" },
+    { to: "/contact", label: "Contact Us" },
+  ];
+
   return (
     <nav className="flex items-center justify-between p-4 text-white bg-black w-[95%] m-auto h-[65px] rounded-[20px]">
       <div className="flex items-center justify-between w-full">
-        <a className="text-xl font-semibold" href="/">
-          <img src={require("../images/logo.png")} />
-        </a>
+        <Link className="text-xl font-semibold" to="/">
+          <img src={logo} />
+        </Link>
         <div className="ml-6 hidden md:flex space-x-8 items-center justify-center font-bold ">
-          <a
-            href="#"
-            className="hover:text-[#86C6CC] active:text-[#86C6CC] transition duration-500"
-          >
-            Event Builder
-          </a>
-          <a
-            href="#"
-            className="hover:text-[#86C6CC] active:text-[#86C6CC] transition duration-500"
-          >
-            Saved
-          </a>
-          <button className="px-4 py-2 bg-[#5DA3A9] rounded-lg hover:bg-[#4f8b91] transition duration-500">
-            Contact Us
-          </button>
+          {menuItems.map((item, index) => (
+            <Link
+              key={item.label}
+              to={item.to}
+              className={
+                index !== menuItems.length - 1
+                  ? "hover:text-[#86C6CC] active:text-[#86C6CC] transition duration-500"
+                  : "px-4 py-2 bg-[#5DA3A9] rounded-lg hover:bg-[#4f8b91] transition duration-500"
+              }
+            >
+              {item.label}
+            </Link>
+          ))}
         </div>
       </div>
 
@@ -85,21 +92,15 @@ const Navbar: React.FC = () => {
             </button>
           </div>
           <div className="flex flex-col mt-24 h-full space-y-6 text-center ">
-            <a
-              href="#"
-              className="text-xl text-gray-300 hover:font-semibold hover:text-white active:font-semibold active:text-white transition duration-500"
-            >
-              Event Builder
-            </a>
-            <a
-              href="#"
-              className="text-xl text-gray-300 hover:font-semibold hover:text-white active:font-semibold active:text-white transition duration-500"
-            >
-              Saved
-            </a>
-            <button className="text-xl text-gray-300 hover:font-semibold hover:text-white active:font-semibold active:text-white transition duration-500">
-              Contact US
-            </button>
+            {menuItems.map((item, index) => (
+              <Link
+                key={item.label}
+                to={item.to}
+                className="text-xl text-gray-300 hover:font-semibold hover:text-white active:font-semibold active:text-white transition duration-500"
+              >
+                {item.label}
+              </Link>
+            ))}
           </div>
         </motion.div>
       )}
