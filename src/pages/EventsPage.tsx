@@ -10,6 +10,8 @@ export interface CategoryType {
   image: string;
 }
 
+const addIcon = require("../assets/images/addIcon.png");
+
 const EventsPage: React.FC = () => {
   const [categories, setCategories] = useState<CategoryType[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<CategoryType>();
@@ -70,6 +72,16 @@ const EventsPage: React.FC = () => {
     );
   };
 
+  const CategoryAverageBudget = () => {
+    const avgBudgetArray = categoryData.map((task) => task.avgBudget);
+    const sumOfAvgBudgets = avgBudgetArray.reduce(
+      (total, avgBudget) => total + avgBudget,
+      0
+    );
+    const average = sumOfAvgBudgets / avgBudgetArray.length;
+    return Math.floor(average);
+  };
+
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleCloseModal = () => {
@@ -79,6 +91,8 @@ const EventsPage: React.FC = () => {
   const handleSaveClick = () => {
     setIsModalOpen(true);
   };
+
+  console.log(categoryData);
   return (
     <div className="md:flex justify-start align-middle md:w-[92%] m-auto mt-4 md:mt-10 grid grid-cols-12 gap-6">
       <div className="w-full col-span-12 md:col-span-3 px-4 lg:px-0">
@@ -87,29 +101,13 @@ const EventsPage: React.FC = () => {
         </h1>
         <p className="mt-2 md:mt-4 text-[#747474] text-center md:text-left pr-0 md:pr-12">
           Add items to your event using the{" "}
-          <svg
-            width="17"
-            height="17"
-            viewBox="0 0 29 30"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
+          <img
             className="inline"
-          >
-            <g opacity="0.6">
-              <circle cx="14.2616" cy="14.8608" r="14.1885" fill="black" />
-              <circle
-                cx="14.2616"
-                cy="14.8608"
-                r="14.1885"
-                fill="black"
-                fill-opacity="0.2"
-              />
-            </g>
-            <path
-              d="M14.2613 20.6413C13.4542 20.6413 12.7999 19.987 12.7999 19.1798V10.5418C12.7999 9.73463 13.4542 9.08032 14.2613 9.08032C15.0685 9.08032 15.7228 9.73464 15.7228 10.5418V19.1798C15.7228 19.987 15.0685 20.6413 14.2613 20.6413ZM9.94228 16.3223C9.13515 16.3223 8.48083 15.6679 8.48083 14.8608C8.48083 14.0537 9.13515 13.3994 9.94228 13.3994H18.5804C19.3875 13.3994 20.0418 14.0537 20.0418 14.8608C20.0418 15.6679 19.3875 16.3223 18.5804 16.3223H9.94228Z"
-              fill="white"
-            />
-          </svg>{" "}
+            src={addIcon}
+            alt="Add Icon"
+            width="17px"
+            height="17px"
+          />{" "}
           to view our cost estimate
         </p>
         {selectedCategory && (
@@ -121,6 +119,12 @@ const EventsPage: React.FC = () => {
             <p className="mt-4 text-[#747474] text-left">
               There are {categoryData.length} tasks which you can select in this
               category
+            </p>
+            <p className="mt-4 font-bold">
+              Average Cost:{" "}
+              <span className="font-normal text-[#747474]">
+                ${CategoryAverageBudget().toLocaleString()}
+              </span>
             </p>
           </div>
         )}
@@ -144,7 +148,7 @@ const EventsPage: React.FC = () => {
                     (dataTask) => dataTask.id === SelectedTask.task.id
                   )
                 ).length > 0 && (
-                  <span className="ml-2">
+                  <span className="ml-1 md:ml-2">
                     (
                     {
                       selectedTasks.filter((SelectedTask: SelectedTask) =>
@@ -234,20 +238,12 @@ const EventsPage: React.FC = () => {
                 className="text-black hover:text-gray-700 transition-all duration-500 absolute top-4 right-4"
                 onClick={handleCloseModal}
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <line x1="18" y1="6" x2="6" y2="18"></line>
-                  <line x1="6" y1="6" x2="18" y2="18"></line>
-                </svg>
+                <img
+                  src={require("../assets/images/closeIcon.png")}
+                  alt="Add Icon"
+                  width="24px"
+                  height="24px"
+                />
               </button>
               <div className="h-full flex flex-col justify-center items-center">
                 <div className=" bg-white h-56 w-56 rounded-full bg-circle flex flex-col justify-center items-center">
