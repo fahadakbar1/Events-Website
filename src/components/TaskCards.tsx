@@ -20,7 +20,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, selectedCategory }) => {
     if (isSelected) {
       dispatch(removeTask(task.id));
     } else {
-      dispatch(addTask(task, selectedCategory));
+      dispatch(addTask(task, selectedCategory.id));
     }
   };
 

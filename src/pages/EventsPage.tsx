@@ -3,7 +3,8 @@ import { useSelector } from "react-redux";
 import TaskCard from "../components/TaskCards";
 import { Task } from "../redux/reducers/selectedTasksReducer";
 import { SelectedTask } from "../redux/reducers/selectedTasksReducer";
-interface CategoryType {
+import { motion, AnimatePresence } from "framer-motion";
+export interface CategoryType {
   id: number;
   title: string;
   image: string;
@@ -11,7 +12,7 @@ interface CategoryType {
 
 const EventsPage: React.FC = () => {
   const [categories, setCategories] = useState<CategoryType[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<CategoryType>();
   const [categoryData, setCategoryData] = useState<Task[]>([]);
 
   // Fetch categories
@@ -30,7 +31,7 @@ const EventsPage: React.FC = () => {
   useEffect(() => {
     if (selectedCategory !== null) {
       fetch(
-        `https://swensonhe-dev-challenge.s3.us-west-2.amazonaws.com/categories/${selectedCategory}.json`
+        `https://swensonhe-dev-challenge.s3.us-west-2.amazonaws.com/categories/${selectedCategory?.id}.json`
       )
         .then((response) => response.json())
         .then((data) => {
@@ -42,8 +43,8 @@ const EventsPage: React.FC = () => {
     }
   }, [selectedCategory]);
 
-  const handleCategorySelect = (categoryId: number) => {
-    setSelectedCategory(categoryId);
+  const handleCategorySelect = (category: CategoryType) => {
+    setSelectedCategory(category);
   };
 
   const selectedTasks = useSelector((state: any) => state.selectedTasks);
@@ -84,7 +85,7 @@ const EventsPage: React.FC = () => {
         <h1 className="text-center md:text-left text-xl md:text-lg font-bold">
           Event Builder
         </h1>
-        <p className=" mt-2 md:mt-4 text-[#747474] text-center md:text-left pr-0 md:pr-12">
+        <p className="mt-2 md:mt-4 text-[#747474] text-center md:text-left pr-0 md:pr-12">
           Add items to your event using the{" "}
           <svg
             width="17"
@@ -111,6 +112,18 @@ const EventsPage: React.FC = () => {
           </svg>{" "}
           to view our cost estimate
         </p>
+        {selectedCategory && (
+          <div className="mt-4 hidden md:block">
+            <h1 className="text-center md:text-left text-xl md:text-lg font-bold mb-4">
+              Selected Category
+            </h1>
+            <img src={selectedCategory?.image} alt={selectedCategory?.title} />
+            <p className="mt-4 text-[#747474] text-left">
+              There are {categoryData.length} tasks you can selected in this
+              category
+            </p>
+          </div>
+        )}
       </div>
       <div className="w-full col-span-12 md:col-span-6 bg-[#FFFFFF] rounded-2xl px-3 py-4 md:p-4 h-[80vh]">
         <div className="w-full md:flex mb-4">
@@ -118,14 +131,14 @@ const EventsPage: React.FC = () => {
             <button
               key={category.id}
               className={`mx-0.5 md:mx-2 px-4 py-1 md:px-8 md:py-2.5 rounded-full hover:bg-[#5DA3A9] hover:text-white hover:text-bold hover:font-semibold transition duration-500 ${
-                selectedCategory === category.id
+                selectedCategory?.id === category.id
                   ? "bg-[#5DA3A9] text-white font-semibold"
                   : "bg-[#FAF9F8] text-gray-800"
               }`}
-              onClick={() => handleCategorySelect(category.id)}
+              onClick={() => handleCategorySelect(category)}
             >
               {category.title}
-              {selectedCategory === category.id &&
+              {selectedCategory?.id === category.id &&
                 selectedTasks.filter((SelectedTask: SelectedTask) =>
                   categoryData.some(
                     (dataTask) => dataTask.id === SelectedTask.task.id
@@ -207,54 +220,62 @@ const EventsPage: React.FC = () => {
           </button>
         </div>
       </div>
-      {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-[#FAF9F8] p-6 rounded-2xl shadow-md w-11/12 md:w-2/5 m-auto h-2/3 relative">
-            <button
-              className="text-black hover:text-gray-700 transition-all duration-500 absolute top-4 right-4"
-              onClick={handleCloseModal}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
+      <AnimatePresence>
+        {isModalOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1 }}
+            className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
+          >
+            <div className="bg-[#FAF9F8] p-6 rounded-2xl shadow-md w-11/12 md:w-2/5 m-auto h-2/3 relative">
+              <button
+                className="text-black hover:text-gray-700 transition-all duration-500 absolute top-4 right-4"
+                onClick={handleCloseModal}
               >
-                <line x1="18" y1="6" x2="6" y2="18"></line>
-                <line x1="6" y1="6" x2="18" y2="18"></line>
-              </svg>
-            </button>
-            <div className="h-full flex flex-col justify-center items-center">
-              <div className=" bg-white h-56 w-56 rounded-full bg-circle flex flex-col justify-center items-center">
-                <h2 className="text-2xl font-semibold mb-4">Event Saved!</h2>
-
-                <p className="text-4xl font-semibold mb-4">
-                  {calculateMinPrice() === 0 && calculateMaxPrice() === 0
-                    ? "$-"
-                    : `$${calculateMinPrice()}-${calculateMaxPrice()}`}
-                </p>
                 <svg
-                  width="40"
-                  height="37"
-                  viewBox="0 0 40 37"
-                  fill="none"
                   xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 >
-                  <path
-                    d="M20 0L24.4903 13.8197H39.0211L27.2654 22.3607L31.7557 36.1803L20 27.6393L8.2443 36.1803L12.7346 22.3607L0.97887 13.8197H15.5097L20 0Z"
-                    fill="black"
-                  />
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
                 </svg>
+              </button>
+              <div className="h-full flex flex-col justify-center items-center">
+                <div className=" bg-white h-56 w-56 rounded-full bg-circle flex flex-col justify-center items-center">
+                  <h2 className="text-2xl font-semibold mb-4">Event Saved!</h2>
+
+                  <p className="text-4xl font-semibold mb-4">
+                    {calculateMinPrice() === 0 && calculateMaxPrice() === 0
+                      ? "$-"
+                      : `$${calculateMinPrice()}-${calculateMaxPrice()}`}
+                  </p>
+                  <svg
+                    width="40"
+                    height="37"
+                    viewBox="0 0 40 37"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M20 0L24.4903 13.8197H39.0211L27.2654 22.3607L31.7557 36.1803L20 27.6393L8.2443 36.1803L12.7346 22.3607L0.97887 13.8197H15.5097L20 0Z"
+                      fill="black"
+                    />
+                  </svg>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
