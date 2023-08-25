@@ -21,7 +21,7 @@ const Navbar: React.FC = () => {
     <nav className="flex items-center justify-between p-4 text-white bg-black w-[95%] m-auto h-[65px] rounded-[20px]">
       <div className="flex items-center justify-between w-full">
         <Link className="text-xl font-semibold" to="/">
-          <img src={logo} />
+          <img src={logo} alt="logo"/>
         </Link>
         <div className="ml-6 hidden md:flex space-x-8 items-center justify-center font-bold ">
           {menuItems.map((item, index) => (
