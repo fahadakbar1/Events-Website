@@ -1,9 +1,11 @@
 # Instructions to run the project locally
 ## First Step: Clone this repo
 
-1. Open Terminal
-2. Change the current working directory to the location where you want the cloned directory.
-3. Type git clone, and then paste the URL you copied earlier. or just copy the command given below
+1. Above the list of files, click Code.
+2. Copy the URL.
+3. Open Terminal
+4. Change the current working directory to the location where you want the cloned directory.
+5. Type git clone, and then paste the URL you copied earlier. or just copy the command given below
 
 ### `git clone https://github.com/fahadakbar1/swensonhe_challenge.git`
 
