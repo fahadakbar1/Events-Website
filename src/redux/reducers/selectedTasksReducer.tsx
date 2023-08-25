@@ -1,5 +1,4 @@
 import { AnyAction } from "redux";
-
 export interface Task {
   id: number;
   title: string;
@@ -8,13 +7,12 @@ export interface Task {
   avgBudget: number;
   image: string;
 }
-
 export interface SelectedTask {
   task: Task;
-  categoryId: number; // Associate tasks with category
+  categoryId: number;
 }
 
-const initialState: SelectedTask[] = []; // Array to store selected task objects
+const initialState: SelectedTask[] = [];
 
 const selectedTasksReducer = (state = initialState, action: AnyAction) => {
   switch (action.type) {

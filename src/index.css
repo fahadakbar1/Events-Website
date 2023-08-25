@@ -2,8 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-body{
-  background: #FAF9F8;
+body {
+  background: #faf9f8;
 }
 
 .custom-container {
