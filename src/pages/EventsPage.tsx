@@ -70,6 +70,13 @@ const EventsPage: React.FC = () => {
     );
   };
 
+  const CategoryAverageBudget = () => {
+    const avgBudgetArray = categoryData.map(task => task.avgBudget);
+const sumOfAvgBudgets = avgBudgetArray.reduce((total, avgBudget) => total + avgBudget, 0);
+const average = sumOfAvgBudgets / avgBudgetArray.length;
+    return Math.floor(average);
+  };
+
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleCloseModal = () => {
@@ -79,6 +86,8 @@ const EventsPage: React.FC = () => {
   const handleSaveClick = () => {
     setIsModalOpen(true);
   };
+
+  console.log(categoryData)
   return (
     <div className="md:flex justify-start align-middle md:w-[92%] m-auto mt-4 md:mt-10 grid grid-cols-12 gap-6">
       <div className="w-full col-span-12 md:col-span-3 px-4 lg:px-0">
@@ -122,6 +131,7 @@ const EventsPage: React.FC = () => {
               There are {categoryData.length} tasks which you can select in this
               category
             </p>
+            <p className="mt-4 font-bold">Average Cost: <span className="font-normal text-[#747474]">${CategoryAverageBudget().toLocaleString()}</span></p>
           </div>
         )}
       </div>

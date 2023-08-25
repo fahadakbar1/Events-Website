@@ -120,9 +120,14 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, selectedCategory }) => {
       </button>
       <div className="p-2 pt-0">
         <h4 className="text-[#616161] text-sm mb-1">{task.title}</h4>
-        <p className=" text-black font-bold text-sm">
-          ${task.minBudget.toLocaleString()}-{task.maxBudget.toLocaleString()}
-        </p>
+        <div className="flex justify-between items-center">
+          <p className=" text-black font-bold text-sm">
+            ${task.minBudget.toLocaleString()}-{task.maxBudget.toLocaleString()}
+          </p>
+          <p className="text-[#616161] text-xs md:text-[11px]">
+            Avg:${task.avgBudget.toLocaleString()}
+          </p>
+        </div>
       </div>
     </div>
   );
