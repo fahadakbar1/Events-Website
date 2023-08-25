@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import TaskCard from "../components/TaskCards";
-import { Task } from "../redux/reducers/selectedTasksReducer"; // Import the Task type
+import { Task } from "../redux/reducers/selectedTasksReducer";
 import { SelectedTask } from "../redux/reducers/selectedTasksReducer";
 interface CategoryType {
   id: number;
@@ -11,7 +11,7 @@ interface CategoryType {
 
 const EventsPage: React.FC = () => {
   const [categories, setCategories] = useState<CategoryType[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<number | null>(null); // Use null instead of undefined
+  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [categoryData, setCategoryData] = useState<Task[]>([]);
 
   // Fetch categories
@@ -131,14 +131,16 @@ const EventsPage: React.FC = () => {
                     (dataTask) => dataTask.id === SelectedTask.task.id
                   )
                 ).length > 0 && (
-                  <span className="ml-2">(
+                  <span className="ml-2">
+                    (
                     {
                       selectedTasks.filter((SelectedTask: SelectedTask) =>
                         categoryData.some(
                           (dataTask) => dataTask.id === SelectedTask.task.id
                         )
                       ).length
-                    })
+                    }
+                    )
                   </span>
                 )}
             </button>
@@ -168,7 +170,6 @@ const EventsPage: React.FC = () => {
               }
             </p>
             <hr className="text-[#FAF9F8] my-4 hidden md:block" />
-            {/* Display selected categories and tasks */}
             <div className="mt-4 hidden md:block">
               {categories.map((category) => (
                 <div className="mb-3" key={category.id}>
@@ -180,62 +181,20 @@ const EventsPage: React.FC = () => {
                       (selectedTask: { categoryId: number }) =>
                         selectedTask.categoryId === category.id
                     )
-                    .map(
-                      (selectedTask: {
-                        task: {
-                          id: React.Key | null | undefined;
-                          title:
-                            | string
-                            | number
-                            | boolean
-                            | React.ReactElement<
-                                any,
-                                string | React.JSXElementConstructor<any>
-                              >
-                            | Iterable<React.ReactNode>
-                            | React.ReactPortal
-                            | null
-                            | undefined;
-                          minBudget:
-                            | string
-                            | number
-                            | boolean
-                            | React.ReactElement<
-                                any,
-                                string | React.JSXElementConstructor<any>
-                              >
-                            | Iterable<React.ReactNode>
-                            | React.ReactPortal
-                            | null
-                            | undefined;
-                          maxBudget:
-                            | string
-                            | number
-                            | boolean
-                            | React.ReactElement<
-                                any,
-                                string | React.JSXElementConstructor<any>
-                              >
-                            | Iterable<React.ReactNode>
-                            | React.ReactPortal
-                            | null
-                            | undefined;
-                        };
-                      }) => (
-                        <div
-                          className="flex justify-between"
-                          key={selectedTask.task.id}
-                        >
-                          <p className="text-sm text-[#747474]">
-                            {selectedTask.task.title}
-                          </p>
-                          <p className="text-sm text-[#747474]">
-                            ${selectedTask.task.minBudget} - $
-                            {selectedTask.task.maxBudget}
-                          </p>
-                        </div>
-                      )
-                    )}
+                    .map((selectedTask: SelectedTask) => (
+                      <div
+                        className="flex justify-between"
+                        key={selectedTask.task.id}
+                      >
+                        <p className="text-sm text-[#747474]">
+                          {selectedTask.task.title}
+                        </p>
+                        <p className="text-sm text-[#747474]">
+                          ${selectedTask.task.minBudget} - $
+                          {selectedTask.task.maxBudget}
+                        </p>
+                      </div>
+                    ))}
                 </div>
               ))}
             </div>
@@ -251,40 +210,48 @@ const EventsPage: React.FC = () => {
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-[#FAF9F8] p-6 rounded-2xl shadow-md w-11/12 md:w-2/5 m-auto h-2/3 relative">
-              <button
-                className="text-black hover:text-gray-700 transition-all duration-500 absolute top-4 right-4"
-                onClick={handleCloseModal}
+            <button
+              className="text-black hover:text-gray-700 transition-all duration-500 absolute top-4 right-4"
+              onClick={handleCloseModal}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <line x1="18" y1="6" x2="6" y2="18"></line>
-                  <line x1="6" y1="6" x2="18" y2="18"></line>
-                </svg>
-              </button>
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
             <div className="h-full flex flex-col justify-center items-center">
-            <div className=" bg-white h-56 w-56 rounded-full bg-circle flex flex-col justify-center items-center">
-  <h2 className="text-2xl font-semibold mb-4">Event Saved!</h2>
+              <div className=" bg-white h-56 w-56 rounded-full bg-circle flex flex-col justify-center items-center">
+                <h2 className="text-2xl font-semibold mb-4">Event Saved!</h2>
 
-  <p className="text-4xl font-semibold mb-4">
-  {(calculateMinPrice() === 0  && calculateMaxPrice() === 0)
-                  ? "$-"
-                  : `$${calculateMinPrice()}-${calculateMaxPrice()}`}
-  </p>
-  <svg width="40" height="37" viewBox="0 0 40 37" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M20 0L24.4903 13.8197H39.0211L27.2654 22.3607L31.7557 36.1803L20 27.6393L8.2443 36.1803L12.7346 22.3607L0.97887 13.8197H15.5097L20 0Z" fill="black"/>
-</svg>
-</div>
-</div>
-            
+                <p className="text-4xl font-semibold mb-4">
+                  {calculateMinPrice() === 0 && calculateMaxPrice() === 0
+                    ? "$-"
+                    : `$${calculateMinPrice()}-${calculateMaxPrice()}`}
+                </p>
+                <svg
+                  width="40"
+                  height="37"
+                  viewBox="0 0 40 37"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M20 0L24.4903 13.8197H39.0211L27.2654 22.3607L31.7557 36.1803L20 27.6393L8.2443 36.1803L12.7346 22.3607L0.97887 13.8197H15.5097L20 0Z"
+                    fill="black"
+                  />
+                </svg>
+              </div>
+            </div>
           </div>
         </div>
       )}
