@@ -250,7 +250,7 @@ const EventsPage: React.FC = () => {
       </div>
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-[#FAF9F8] p-6 rounded-2xl shadow-md w-2/5 m-auto h-2/3 relative">
+          <div className="bg-[#FAF9F8] p-6 rounded-2xl shadow-md w-11/12 md:w-2/5 m-auto h-2/3 relative">
               <button
                 className="text-black hover:text-gray-700 transition-all duration-500 absolute top-4 right-4"
                 onClick={handleCloseModal}
