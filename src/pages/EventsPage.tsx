@@ -148,7 +148,7 @@ const EventsPage: React.FC = () => {
                     (dataTask) => dataTask.id === SelectedTask.task.id
                   )
                 ).length > 0 && (
-                  <span className="ml-2">
+                  <span className="ml-1 md:ml-2">
                     (
                     {
                       selectedTasks.filter((SelectedTask: SelectedTask) =>
