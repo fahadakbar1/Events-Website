@@ -3,7 +3,9 @@ import { useSelector } from "react-redux";
 import TaskCard from "../components/TaskCards";
 import { Task } from "../redux/reducers/selectedTasksReducer";
 import { SelectedTask } from "../redux/reducers/selectedTasksReducer";
+
 import { motion, AnimatePresence } from "framer-motion";
+import { TaskCardProps } from "../components/TaskCards";
 export interface CategoryType {
   id: number;
   title: string;
@@ -82,6 +84,18 @@ const EventsPage: React.FC = () => {
     return Math.floor(average);
   };
 
+  const SelectedTasksAverage = () => {
+    const avgBudgetArray = selectedTasks.map(
+      (task: TaskCardProps) => task.task.avgBudget
+    );
+    const sumOfAvgBudgets = avgBudgetArray.reduce(
+      (total: any, avgBudget: any) => total + avgBudget,
+      0
+    );
+    const average = sumOfAvgBudgets / avgBudgetArray.length;
+    return Math.floor(average);
+  };
+
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleCloseModal = () => {
@@ -92,7 +106,6 @@ const EventsPage: React.FC = () => {
     setIsModalOpen(true);
   };
 
-  console.log(categoryData);
   return (
     <div className="md:flex justify-start align-middle md:w-[92%] m-auto mt-4 md:mt-10 grid grid-cols-12 gap-6">
       <div className="w-full col-span-12 md:col-span-3 px-4 lg:px-0">
@@ -214,6 +227,14 @@ const EventsPage: React.FC = () => {
                     ))}
                 </div>
               ))}
+              <p className="mt-4 font-bold text-sm text-[#6c6c6c]">
+                Average Cost:{" "}
+                <span className="font-normal text-[#747474]">
+                  {SelectedTasksAverage()
+                    ? `${SelectedTasksAverage().toLocaleString()}`
+                    : `$-`}
+                </span>
+              </p>
             </div>
           </div>
           <button
