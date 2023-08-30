@@ -3,9 +3,8 @@ import { useSelector } from "react-redux";
 import TaskCard from "../components/TaskCards";
 import { Task } from "../redux/reducers/selectedTasksReducer";
 import { SelectedTask } from "../redux/reducers/selectedTasksReducer";
-
 import { motion, AnimatePresence } from "framer-motion";
-import { TaskCardProps } from "../components/TaskCards";
+import SelectedCategory from "../components/SelectedCategory";
 export interface CategoryType {
   id: number;
   title: string;
@@ -72,7 +71,6 @@ const EventsPage: React.FC = () => {
       0
     );
   };
-
   const CategoryAverageBudget = () => {
     const avgBudgetArray = categoryData.map((task) => task.avgBudget);
     const sumOfAvgBudgets = avgBudgetArray.reduce(
@@ -82,10 +80,9 @@ const EventsPage: React.FC = () => {
     const average = sumOfAvgBudgets / avgBudgetArray.length;
     return Math.floor(average);
   };
-
   const SelectedTasksAverage = () => {
     const avgBudgetArray = selectedTasks.map(
-      (task: TaskCardProps) => task.task.avgBudget
+      (task: SelectedTask) => task.task.avgBudget
     );
     const sumOfAvgBudgets = avgBudgetArray.reduce(
       (total: any, avgBudget: any) => total + avgBudget,
@@ -122,24 +119,7 @@ const EventsPage: React.FC = () => {
           />{" "}
           to view our cost estimate
         </p>
-        {selectedCategory && (
-          <div className="mt-4 hidden md:block">
-            <h1 className="text-center md:text-left text-xl md:text-lg font-bold mb-4">
-              Selected Category
-            </h1>
-            <img src={selectedCategory?.image} alt={selectedCategory?.title} />
-            <p className="mt-4 text-[#747474] text-left">
-              There are {categoryData.length} tasks which you can select in this
-              category
-            </p>
-            <p className="mt-4 font-bold">
-              Average Cost:{" "}
-              <span className="font-normal text-[#747474]">
-                ${CategoryAverageBudget().toLocaleString()}
-              </span>
-            </p>
-          </div>
-        )}
+        <SelectedCategory selectedCategory={selectedCategory} categoryData={categoryData} categoryAverageBudget={CategoryAverageBudget()}/>
       </div>
       <div className="w-full col-span-12 md:col-span-6 bg-[#FFFFFF] rounded-2xl px-3 py-4 md:p-4 h-[80vh]">
         <div className="flex justify-between items-center md:flex mb-4">
