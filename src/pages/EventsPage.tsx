@@ -53,7 +53,6 @@ const EventsPage: React.FC = () => {
 
   const selectedTasks = useSelector((state: any) => state.selectedTasks);
 
-  console.log(selectedTasks);
   // Calculate estimated price
   const calculateMinPrice = () => {
     const selectedTaskPrices = selectedTasks.map(
@@ -143,7 +142,7 @@ const EventsPage: React.FC = () => {
         )}
       </div>
       <div className="w-full col-span-12 md:col-span-6 bg-[#FFFFFF] rounded-2xl px-3 py-4 md:p-4 h-[80vh]">
-        <div className="w-full md:flex mb-4">
+        <div className="flex justify-between items-center md:flex mb-4">
           {categories.map((category) => (
             <button
               key={category.id}
