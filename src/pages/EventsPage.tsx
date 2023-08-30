@@ -6,6 +6,8 @@ import { SelectedTask } from "../redux/reducers/selectedTasksReducer";
 import { AnimatePresence } from "framer-motion";
 import SelectedCategory from "../components/SelectedCategory";
 import SaveModal from "../components/SaveModal";
+import AllSelectedTasks from "../components/AllSelectedTasks";
+
 import {
   calculateMinPrice,
   calculateMaxPrice,
@@ -156,42 +158,11 @@ const EventsPage: React.FC = () => {
               }
             </p>
             <hr className="text-[#FAF9F8] my-4 hidden md:block" />
-            <div className="mt-4 hidden md:block">
-              {categories.map((category) => (
-                <div className="mb-3" key={category.id}>
-                  <h3 className="text-sm text-[#6c6c6c] font-semibold mb-1">
-                    {category.title}
-                  </h3>
-                  {selectedTasks
-                    .filter(
-                      (selectedTask: { categoryId: number }) =>
-                        selectedTask.categoryId === category.id
-                    )
-                    .map((selectedTask: SelectedTask) => (
-                      <div
-                        className="flex justify-between"
-                        key={selectedTask.task.id}
-                      >
-                        <p className="text-sm text-[#747474]">
-                          {selectedTask.task.title}
-                        </p>
-                        <p className="text-sm text-[#747474]">
-                          ${selectedTask.task.minBudget} - $
-                          {selectedTask.task.maxBudget}
-                        </p>
-                      </div>
-                    ))}
-                </div>
-              ))}
-              <p className="mt-4 font-bold text-sm text-[#6c6c6c]">
-                Average Cost:{" "}
-                <span className="font-normal text-[#747474]">
-                  {selectedTasksAvg
-                    ? `${selectedTasksAvg.toLocaleString()}`
-                    : `$-`}
-                </span>
-              </p>
-            </div>
+            <AllSelectedTasks
+              categories={categories}
+              selectedTasks={selectedTasks}
+              selectedTasksAvg={selectedTasksAvg}
+            />
           </div>
           <button
             className="text-sm md:text-base md:mt-4 md:w-full md:bg-[#5DA3A9] font-semibold text-[#5DA3A9] md:text-white px-4 md:py-2 rounded-xl"
