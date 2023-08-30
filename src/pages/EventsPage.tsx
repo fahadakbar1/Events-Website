@@ -5,6 +5,13 @@ import { Task } from "../redux/reducers/selectedTasksReducer";
 import { SelectedTask } from "../redux/reducers/selectedTasksReducer";
 import { motion, AnimatePresence } from "framer-motion";
 import SelectedCategory from "../components/SelectedCategory";
+import {
+  calculateMinPrice,
+  calculateMaxPrice,
+  calculateCategoryAverageBudget,
+  calculateSelectedTasksAverage,
+} from "../priceUtils";
+
 export interface CategoryType {
   id: number;
   title: string;
@@ -52,45 +59,10 @@ const EventsPage: React.FC = () => {
 
   const selectedTasks = useSelector((state: any) => state.selectedTasks);
 
-  // Calculate estimated price
-  const calculateMinPrice = () => {
-    const selectedTaskPrices = selectedTasks.map(
-      (SelectedTask: SelectedTask) => SelectedTask.task.minBudget || 0
-    );
-    return selectedTaskPrices.reduce(
-      (sum: number, price: number) => sum + price,
-      0
-    );
-  };
-  const calculateMaxPrice = () => {
-    const selectedTaskPrices = selectedTasks.map(
-      (SelectedTask: SelectedTask) => SelectedTask.task.maxBudget || 0
-    );
-    return selectedTaskPrices.reduce(
-      (sum: number, price: number) => sum + price,
-      0
-    );
-  };
-  const CategoryAverageBudget = () => {
-    const avgBudgetArray = categoryData.map((task) => task.avgBudget);
-    const sumOfAvgBudgets = avgBudgetArray.reduce(
-      (total, avgBudget) => total + avgBudget,
-      0
-    );
-    const average = sumOfAvgBudgets / avgBudgetArray.length;
-    return Math.floor(average);
-  };
-  const SelectedTasksAverage = () => {
-    const avgBudgetArray = selectedTasks.map(
-      (task: SelectedTask) => task.task.avgBudget
-    );
-    const sumOfAvgBudgets = avgBudgetArray.reduce(
-      (total: any, avgBudget: any) => total + avgBudget,
-      0
-    );
-    const average = sumOfAvgBudgets / avgBudgetArray.length;
-    return Math.floor(average);
-  };
+  const minPrice = calculateMinPrice(selectedTasks);
+  const maxPrice = calculateMaxPrice(selectedTasks);
+  const categoryAvgBudget = calculateCategoryAverageBudget(categoryData);
+  const selectedTasksAvg = calculateSelectedTasksAverage(selectedTasks);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -119,7 +91,11 @@ const EventsPage: React.FC = () => {
           />{" "}
           to view our cost estimate
         </p>
-        <SelectedCategory selectedCategory={selectedCategory} categoryData={categoryData} categoryAverageBudget={CategoryAverageBudget()}/>
+        <SelectedCategory
+          selectedCategory={selectedCategory}
+          categoryData={categoryData}
+          categoryAverageBudget={categoryAvgBudget}
+        />
       </div>
       <div className="w-full col-span-12 md:col-span-6 bg-[#FFFFFF] rounded-2xl px-3 py-4 md:p-4 h-[80vh]">
         <div className="flex justify-between items-center md:flex mb-4">
@@ -175,7 +151,7 @@ const EventsPage: React.FC = () => {
               {
                 selectedTasks.length === 0
                   ? "$-"
-                  : `$${calculateMinPrice().toLocaleString()}-${calculateMaxPrice().toLocaleString()}` // Adjust this range as needed
+                  : `$${minPrice.toLocaleString()}-${maxPrice.toLocaleString()}` // Adjust this range as needed
               }
             </p>
             <hr className="text-[#FAF9F8] my-4 hidden md:block" />
@@ -209,8 +185,8 @@ const EventsPage: React.FC = () => {
               <p className="mt-4 font-bold text-sm text-[#6c6c6c]">
                 Average Cost:{" "}
                 <span className="font-normal text-[#747474]">
-                  {SelectedTasksAverage()
-                    ? `${SelectedTasksAverage().toLocaleString()}`
+                  {selectedTasksAvg
+                    ? `${selectedTasksAvg.toLocaleString()}`
                     : `$-`}
                 </span>
               </p>
@@ -250,9 +226,9 @@ const EventsPage: React.FC = () => {
                   <h2 className="text-2xl font-semibold mb-4">Event Saved!</h2>
 
                   <p className="text-4xl font-semibold mb-4">
-                    {calculateMinPrice() === 0 && calculateMaxPrice() === 0
+                    {minPrice === 0 && maxPrice === 0
                       ? "$-"
-                      : `$${calculateMinPrice()}-${calculateMaxPrice()}`}
+                      : `$${minPrice}-${maxPrice}`}
                   </p>
                   <svg
                     width="40"
