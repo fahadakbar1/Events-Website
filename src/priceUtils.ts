@@ -42,6 +42,5 @@ export const calculateSelectedTasksAverage = (
     (total: any, avgBudget: any) => total + avgBudget,
     0
   );
-  const average = sumOfAvgBudgets / avgBudgetArray.length;
-  return Math.floor(average);
+  return Math.floor(sumOfAvgBudgets);
 };
