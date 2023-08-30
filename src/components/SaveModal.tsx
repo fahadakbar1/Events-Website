@@ -35,7 +35,7 @@ const SaveModal: React.FC<SavedModalProps> = ({
           <div className=" bg-white h-56 w-56 rounded-full bg-circle flex flex-col justify-center items-center">
             <h2 className="text-2xl font-semibold mb-4">Event Saved!</h2>
 
-            <p className="text-4xl font-semibold mb-4">
+            <p className="text-3xl font-semibold mb-4">
               {minPrice === 0 && maxPrice === 0
                 ? "$-"
                 : `$${minPrice}-${maxPrice}`}
