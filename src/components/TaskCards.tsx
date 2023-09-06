@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addTask, removeTask } from "../redux/actions/actions";
 import { SelectedTask, Task } from "../redux/reducers/selectedTasksReducer";
 import { motion } from "framer-motion";
-interface TaskCardProps {
+export interface TaskCardProps {
   task: Task;
   selectedCategory: any;
 }
@@ -39,9 +39,19 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, selectedCategory }) => {
           transition={{ duration: 1 }}
         >
           {isSelected ? (
-            <img src={require("../assets/images/checkedIcon.png")} alt="Checked Icon" width="27px" height="27px" />
+            <img
+              src={require("../assets/images/checkedIcon.png")}
+              alt="Checked Icon"
+              width="27px"
+              height="27px"
+            />
           ) : (
-            <img src={require("../assets/images/addIcon.png")} alt="Add Icon" width="27px" height="27px" />
+            <img
+              src={require("../assets/images/addIcon.png")}
+              alt="Add Icon"
+              width="27px"
+              height="27px"
+            />
           )}
         </motion.div>
       </button>

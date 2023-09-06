@@ -3,7 +3,18 @@ import { useSelector } from "react-redux";
 import TaskCard from "../components/TaskCards";
 import { Task } from "../redux/reducers/selectedTasksReducer";
 import { SelectedTask } from "../redux/reducers/selectedTasksReducer";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
+import SelectedCategory from "../components/SelectedCategory";
+import SaveModal from "../components/SaveModal";
+import AllSelectedTasks from "../components/AllSelectedTasks";
+
+import {
+  calculateMinPrice,
+  calculateMaxPrice,
+  calculateCategoryAverageBudget,
+  calculateSelectedTasksAverage,
+} from "../priceUtils";
+
 export interface CategoryType {
   id: number;
   title: string;
@@ -51,36 +62,10 @@ const EventsPage: React.FC = () => {
 
   const selectedTasks = useSelector((state: any) => state.selectedTasks);
 
-  console.log(selectedTasks);
-  // Calculate estimated price
-  const calculateMinPrice = () => {
-    const selectedTaskPrices = selectedTasks.map(
-      (SelectedTask: SelectedTask) => SelectedTask.task.minBudget || 0
-    );
-    return selectedTaskPrices.reduce(
-      (sum: number, price: number) => sum + price,
-      0
-    );
-  };
-  const calculateMaxPrice = () => {
-    const selectedTaskPrices = selectedTasks.map(
-      (SelectedTask: SelectedTask) => SelectedTask.task.maxBudget || 0
-    );
-    return selectedTaskPrices.reduce(
-      (sum: number, price: number) => sum + price,
-      0
-    );
-  };
-
-  const CategoryAverageBudget = () => {
-    const avgBudgetArray = categoryData.map((task) => task.avgBudget);
-    const sumOfAvgBudgets = avgBudgetArray.reduce(
-      (total, avgBudget) => total + avgBudget,
-      0
-    );
-    const average = sumOfAvgBudgets / avgBudgetArray.length;
-    return Math.floor(average);
-  };
+  const minPrice = calculateMinPrice(selectedTasks);
+  const maxPrice = calculateMaxPrice(selectedTasks);
+  const categoryAvgBudget = calculateCategoryAverageBudget(categoryData);
+  const selectedTasksAvg = calculateSelectedTasksAverage(selectedTasks);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -92,7 +77,6 @@ const EventsPage: React.FC = () => {
     setIsModalOpen(true);
   };
 
-  console.log(categoryData);
   return (
     <div className="md:flex justify-start align-middle md:w-[92%] m-auto mt-4 md:mt-10 grid grid-cols-12 gap-6">
       <div className="w-full col-span-12 md:col-span-3 px-4 lg:px-0">
@@ -110,27 +94,14 @@ const EventsPage: React.FC = () => {
           />{" "}
           to view our cost estimate
         </p>
-        {selectedCategory && (
-          <div className="mt-4 hidden md:block">
-            <h1 className="text-center md:text-left text-xl md:text-lg font-bold mb-4">
-              Selected Category
-            </h1>
-            <img src={selectedCategory?.image} alt={selectedCategory?.title} />
-            <p className="mt-4 text-[#747474] text-left">
-              There are {categoryData.length} tasks which you can select in this
-              category
-            </p>
-            <p className="mt-4 font-bold">
-              Average Cost:{" "}
-              <span className="font-normal text-[#747474]">
-                ${CategoryAverageBudget().toLocaleString()}
-              </span>
-            </p>
-          </div>
-        )}
+        <SelectedCategory
+          selectedCategory={selectedCategory}
+          categoryData={categoryData}
+          categoryAverageBudget={categoryAvgBudget}
+        />
       </div>
       <div className="w-full col-span-12 md:col-span-6 bg-[#FFFFFF] rounded-2xl px-3 py-4 md:p-4 h-[80vh]">
-        <div className="w-full md:flex mb-4">
+        <div className="flex justify-between items-center md:flex mb-4">
           {categories.map((category) => (
             <button
               key={category.id}
@@ -183,38 +154,15 @@ const EventsPage: React.FC = () => {
               {
                 selectedTasks.length === 0
                   ? "$-"
-                  : `$${calculateMinPrice().toLocaleString()}-${calculateMaxPrice().toLocaleString()}` // Adjust this range as needed
+                  : `$${minPrice.toLocaleString()}-${maxPrice.toLocaleString()}` // Adjust this range as needed
               }
             </p>
             <hr className="text-[#FAF9F8] my-4 hidden md:block" />
-            <div className="mt-4 hidden md:block">
-              {categories.map((category) => (
-                <div className="mb-3" key={category.id}>
-                  <h3 className="text-sm text-[#6c6c6c] font-semibold mb-1">
-                    {category.title}
-                  </h3>
-                  {selectedTasks
-                    .filter(
-                      (selectedTask: { categoryId: number }) =>
-                        selectedTask.categoryId === category.id
-                    )
-                    .map((selectedTask: SelectedTask) => (
-                      <div
-                        className="flex justify-between"
-                        key={selectedTask.task.id}
-                      >
-                        <p className="text-sm text-[#747474]">
-                          {selectedTask.task.title}
-                        </p>
-                        <p className="text-sm text-[#747474]">
-                          ${selectedTask.task.minBudget} - $
-                          {selectedTask.task.maxBudget}
-                        </p>
-                      </div>
-                    ))}
-                </div>
-              ))}
-            </div>
+            <AllSelectedTasks
+              categories={categories}
+              selectedTasks={selectedTasks}
+              selectedTasksAvg={selectedTasksAvg}
+            />
           </div>
           <button
             className="text-sm md:text-base md:mt-4 md:w-full md:bg-[#5DA3A9] font-semibold text-[#5DA3A9] md:text-white px-4 md:py-2 rounded-xl"
@@ -226,50 +174,11 @@ const EventsPage: React.FC = () => {
       </div>
       <AnimatePresence>
         {isModalOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 1 }}
-            className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
-          >
-            <div className="bg-[#FAF9F8] p-6 rounded-2xl shadow-md w-11/12 md:w-2/5 m-auto h-2/3 relative">
-              <button
-                className="text-black hover:text-gray-700 transition-all duration-500 absolute top-4 right-4"
-                onClick={handleCloseModal}
-              >
-                <img
-                  src={require("../assets/images/closeIcon.png")}
-                  alt="Add Icon"
-                  width="24px"
-                  height="24px"
-                />
-              </button>
-              <div className="h-full flex flex-col justify-center items-center">
-                <div className=" bg-white h-56 w-56 rounded-full bg-circle flex flex-col justify-center items-center">
-                  <h2 className="text-2xl font-semibold mb-4">Event Saved!</h2>
-
-                  <p className="text-4xl font-semibold mb-4">
-                    {calculateMinPrice() === 0 && calculateMaxPrice() === 0
-                      ? "$-"
-                      : `$${calculateMinPrice()}-${calculateMaxPrice()}`}
-                  </p>
-                  <svg
-                    width="40"
-                    height="37"
-                    viewBox="0 0 40 37"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M20 0L24.4903 13.8197H39.0211L27.2654 22.3607L31.7557 36.1803L20 27.6393L8.2443 36.1803L12.7346 22.3607L0.97887 13.8197H15.5097L20 0Z"
-                      fill="black"
-                    />
-                  </svg>
-                </div>
-              </div>
-            </div>
-          </motion.div>
+          <SaveModal
+            handleCloseModal={handleCloseModal}
+            minPrice={minPrice}
+            maxPrice={maxPrice}
+          />
         )}
       </AnimatePresence>
     </div>
